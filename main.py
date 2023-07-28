@@ -15,22 +15,24 @@ while style not in styles.keys():
 
 def get_style(name):
     words = name.replace("_", " ").replace("-", " ").split()
-    return styles[style].join(words)
+    return styles[style].join(words).lower()
 
 
 for folder in folders:
     dest = get_style(folder)
+    if folder == dest:
+        continue
     if os.path.isdir(dest):
-        failed.append(dest)
+        failed.append((folder, dest))
     else:
         os.rename(folder, dest)
-        renamed.append(folder)
+        renamed.append((folder, dest))
 
 if renamed:
     print(f"Renamed:")
-    for folder in renamed:
-        print(f"  {folder}")
+    for folder, dest in renamed:
+        print(f"  {folder} to {dest}")
 if failed:
     print(f"Failed to rename:")
-    for folder in failed:
-        print(f"  {folder}")
+    for folder, dest in failed:
+        print(f"  {folder}; {dest} already exists")
